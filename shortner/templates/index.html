@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: "Lato", sans-serif;
+            line-height: 1.5;
+            color: #f7f7f7;
+            background: url('https://images.pexels.com/photos/177598/pexels-photo-177598.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') no-repeat center center fixed; /* Replace with your image URL */
+            background-size: cover;
+            background-color: #000; /* Fallback color */
+        }
+
+        main {
+            max-width: 720px;
+            width: 100%;
+            padding: 2rem;
+            border: 1px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.125),
+                        0 5px 5px rgba(0, 0, 0, 0.25);
+            background-color: #111;
+        }
+
+        h1 {
+            margin: 0 0 1rem;
+            color: #f7f7f7;
+            text-align: center;
+        }
+
+        input,
+        button {
+            font-family: inherit;
+            line-height: inherit;
+            color: inherit;
+            border: 0;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            cursor: pointer;
+            flex: 1;
+            max-width: 200px;
+            background-color: #333;
+            color: #f7f7f7;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        section {
+            min-height: 120px;
+            text-align: center;
+            background-color: #111;
+            border-radius: 5px;
+            margin-top: 1rem;
+            padding: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.125),
+                        0 5px 5px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>URL Shortener</h1>
+        <form id="post-form" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="link" id="link" class="form-control" placeholder="Enter URL here" required>
+                <div class="invalid-feedback">
+                    Please enter a URL.
+                </div>
+            </div>
+            <div class="buttons">
+                <button type="submit" id="shorten" class="btn btn-secondary btn-block">Shorten</button>
+            </div>
+        </form>
+        <section id="section" class="mt-4">
+            <h2></h2>
+        </section>
+    </main>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        $(document).on('submit','#post-form',function(e){
+            e.preventDefault();
+
+            $.ajax({
+                type:'POST',
+                url:'/create',
+                data:{
+                    link:$('#link').val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function(data){
+                    $('h2').html("www.surls.ga/"+data)
+                }
+            });
+        });
+    </script>
+</body>
+</html>
